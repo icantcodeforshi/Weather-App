@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Weather App</title>
+  <meta name="description" content="A simple weather app with city or postal code input.">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+
+</head>
+<body>
+ 
+    <header>
+      <h1 class="heading-1">Check The Weather</h1>
+    </header>
+
+    <!-- Form for City or Postal Code -->
+    <form method="POST" class="search-form">
+      <label for="location" class="sr-only">City or Postcode:</label>
+      <input 
+        type="text" 
+        id="location" 
+        name="location" 
+        placeholder="Enter City or Postcode" 
+        required 
+      />
+      <button type="submit" class="btn-search">
+        <!-- SVG icon: magnifying glass for search -->
+        <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <path d="M10 2a8 8 0 015.29 13.71l4 4a1 1 0 01-1.42 1.42l-4-4A8 8 0 1110 2zm0 2a6 6 0 100 12 6 6 0 000-12z" fill="currentColor"></path>
+        </svg>
+        <span class="sr-only">Search</span>
+      </button>
+    </form>
+
+    <!-- Weather Data Section -->
+    <!-- If there's no weather_data or an error, we'll keep this section hidden with .hidden class -->
+     
+    <section 
+      id="weatherSection" 
+      class="weather-result {% if not weather_data or weather_data.error_message %}hidden{% endif %}"
+      aria-live="polite"
+    >
+      <!-- Only display if we have valid weather_data.current -->
+      {% if weather_data and weather_data.current %}
+      <h2>Weather in {{ weather_data.location.name }}, {{ weather_data.location.country }}</h2>
+      <img src="https:{{ weather_data.current.condition.icon }}">
+      <p>Temperature: {{ weather_data.current.temp_c }} °C</p>
+      <p>Feels Like: {{ weather_data.current.feelslike_c }} °C</p>
+      <p>Weather Description: {{ weather_data.current.condition.text }}</p>
+      <p>Wind Speed: {{ weather_data.current.wind_kph }} kph</p>
+      <p>Humidity: {{ weather_data.current.humidity }}%</p>
+      {% endif %}
+
+      {% if weather_data and weather_data.error_message %}
+  <!-- Show the error ONLY if it exists -->
+  <p class="error-message">Error: {{ weather_data.error_message }}</p>
+{% endif %}
+    </section>
+ 
+</body>
+</html>
+
